@@ -8,10 +8,15 @@ const buildRequest = (
   body: Nullable<unknown>
 ): RequestInit => {
   const headers = new Headers();
+  //   const accessToken =
+  //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9zaCIsImVtYWlsIjoiam9zaE1AZ21haWwuY29tIiwiaWF0IjoxNzM4OTYzNjY4LCJleHAiOjE3Mzg5NjcyNjh9.j5kTX_SRNK1XhcJ9GkyhLYh0eb1RnNtWrUQXbr4CrhA";
 
+  //   headers.append("Authorization", `Bearer ${accessToken}`);
+  headers.append("Content-Type", "application/json");
   const request: RequestInit = {
     headers,
     method,
+    credentials: "include",
     redirect: "manual",
   };
 
@@ -24,7 +29,7 @@ const buildRequest = (
   return request;
 };
 
-async function sendRequest<T>(
+async function sendRequest<T, _K>(
   path: string,
   config: RequestInit
 ): Promise<ResponseWrapper<T>> {
@@ -32,14 +37,19 @@ async function sendRequest<T>(
 
   try {
     const response = await fetch(url, config);
+    console.log("fetch response:");
+    console.log(response);
     const statusCode = response.status;
     const message = response.statusText;
     let data = null;
     let error = null;
+    console.log("get set cookies", response);
 
     if (response.ok && response.body) {
       try {
         data = await response.json();
+        console.log("response json: ");
+        console.log(data);
       } catch (e: unknown) {
         error = e as string;
       }
@@ -52,16 +62,16 @@ async function sendRequest<T>(
 }
 
 export class ApiClient {
-  static async get<T>({
+  static async get<T, K>({
     path,
     body,
   }: RequestConfig<T>): Promise<ResponseWrapper<T>> {
-    return sendRequest<T>(path, buildRequest("GET", body));
+    return sendRequest<T, K>(path, buildRequest("GET", body));
   }
-  static async post<T>({
+  static async post<T, K>({
     path,
     body,
-  }: RequestConfig<T>): Promise<ResponseWrapper<T>> {
-    return sendRequest<T>(path, buildRequest("POST", body));
+  }: RequestConfig<T, K>): Promise<ResponseWrapper<T>> {
+    return sendRequest<T, K>(path, buildRequest("POST", body));
   }
 }
