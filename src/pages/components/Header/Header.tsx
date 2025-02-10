@@ -1,39 +1,50 @@
 import React from "react";
-import { Grid2, Stack } from "@mui/material";
+import { AppBar, Button, Box, Toolbar, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 
 const Header = () => {
   return (
-    <Grid2
-      container
-      direction="column"
-      alignItems="center"
-      size={12}
+    <AppBar
+      position="sticky"
       sx={{
-        top: 0,
-        zIndex: 1,
-        paddingBottom: "2%",
-        boxShadow: "0 1px 0 rgb(0 0 0 / 10%)",
+        backgroundColor: "rgb(108 217 211)",
+        borderRadius: "12px",
+        margin: "10px",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
       }}
     >
-      <Grid2 size={12}>
-        <Image
-          src="/HeaderPage.jpg"
-          height={400}
-          width={2000}
-          alt="Melnick and Sons"
-        />
-      </Grid2>
-      <Stack direction="row">
-        <Link color="inherit" href={"/"}>
-          Home
-        </Link>
-        <Link color="inherit" href={"./Favorites"}>
-          Favorites
-        </Link>
-      </Stack>
-    </Grid2>
+      <Toolbar>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Image
+            src="/HeaderPage.jpg"
+            alt="Logo"
+            width={140}
+            height={100}
+            layout="intrinsic"
+          />
+        </Box>
+        <Typography
+          variant="h5"
+          color="textPrimary"
+          sx={{ flexGrow: 1, marginLeft: 2, fontFamily: "monospace" }}
+        >
+          White Oak Adoption Center
+        </Typography>
+        <Box>
+          <Button color="inherit">
+            <Link href="/" passHref>
+              <Typography>Home</Typography>
+            </Link>
+          </Button>
+          <Button color="inherit">
+            <Link href="/favorites" passHref>
+              <Typography>Favorites</Typography>
+            </Link>
+          </Button>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
 

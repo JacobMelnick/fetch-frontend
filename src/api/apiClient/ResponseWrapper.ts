@@ -23,4 +23,8 @@ export class ResponseWrapper<T> {
   public get isNotFound(): boolean {
     return this.statusCode === 204;
   }
+
+  public get isNotAuthorized(): boolean {
+    return this.statusCode === 401;
+  }
 }

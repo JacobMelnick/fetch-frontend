@@ -5,7 +5,7 @@ import Head from "next/head";
 const Layout = ({ children }) => (
   <div style={{ overflow: "hidden" }}>
     <Head>
-      <title>Dog Central IDk Name</title>
+      <title>White Oak Adoption Center</title>
     </Head>
     <Header />
     <div style={{ paddingTop: 150 }}>{children}</div>

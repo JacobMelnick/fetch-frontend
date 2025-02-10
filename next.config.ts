@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
         source: "/Favorites",
         destination: "/Favorites/Favorites",
       },
+      {
+        source: "/Login",
+        destination: "/Login/Login",
+      },
     ];
   },
 };

@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
     <Box
       component="footer"
       sx={{
-        bgcolor: "primary.main",
+        bgcolor: "rgb(108 217 211)",
         color: "white",
         textAlign: "center",
         mt: "auto",
@@ -14,14 +14,14 @@ const Footer: React.FC = () => {
       }}
     >
       <Container>
-        <Typography variant="body1">
+        <Typography variant="body1" color="primary">
           © {new Date().getFullYear()} Tres Comas. All rights reserved.
         </Typography>
         <Typography variant="body2">
-          <Link color="inherit" sx={{ mx: 1 }}>
+          <Link color="primary" sx={{ mx: 1 }}>
             Privacy Policy
           </Link>
-          <Link color="inherit" sx={{ mx: 1 }}>
+          <Link color="primary" sx={{ mx: 1 }}>
             Terms of Service
           </Link>
         </Typography>

@@ -1,3 +1,4 @@
+import Router from "next/router";
 import { ResponseWrapper } from "./ResponseWrapper";
 import { HTTPMethod, Nullable, RequestConfig } from "./types";
 
@@ -8,23 +9,18 @@ const buildRequest = (
   body: Nullable<unknown>
 ): RequestInit => {
   const headers = new Headers();
-  //   const accessToken =
-  //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9zaCIsImVtYWlsIjoiam9zaE1AZ21haWwuY29tIiwiaWF0IjoxNzM4OTYzNjY4LCJleHAiOjE3Mzg5NjcyNjh9.j5kTX_SRNK1XhcJ9GkyhLYh0eb1RnNtWrUQXbr4CrhA";
-
-  //   headers.append("Authorization", `Bearer ${accessToken}`);
   headers.append("Content-Type", "application/json");
+
   const request: RequestInit = {
     headers,
     method,
-    credentials: "include",
-    redirect: "manual",
+    credentials: "include", // Ensures cookies are sent
+    redirect: "manual", // Prevents automatic redirects
   };
 
-  if (!body) {
-    return request;
+  if (body) {
+    request.body = JSON.stringify(body);
   }
-
-  request.body = JSON.stringify(body);
 
   return request;
 };
@@ -37,27 +33,39 @@ async function sendRequest<T, _K>(
 
   try {
     const response = await fetch(url, config);
-    console.log("fetch response:");
-    console.log(response);
     const statusCode = response.status;
     const message = response.statusText;
     let data = null;
     let error = null;
-    console.log("get set cookies", response);
 
-    if (response.ok && response.body) {
+    if (statusCode === 401) {
+      console.warn("Unauthorized request. Redirecting to login...");
+      Router.push("/login");
+      return new ResponseWrapper<T>(statusCode, null, "Unauthorized", message);
+    }
+
+    if (
+      response.ok &&
+      response.headers.get("content-type")?.includes("application/json")
+    ) {
       try {
         data = await response.json();
-        console.log("response json: ");
-        console.log(data);
-      } catch (e: unknown) {
-        error = e as string;
+      } catch {
+        error = "Failed to parse response JSON";
       }
+    } else {
+      error = message || "Request failed";
     }
 
     return new ResponseWrapper<T>(statusCode, data ?? null, error, message);
   } catch (e: unknown) {
-    throw new Error(e as string);
+    console.error("API request failed:", e);
+    return new ResponseWrapper<T>(
+      500,
+      null,
+      "Network error or server unreachable",
+      "Internal Server Error"
+    );
   }
 }
 
@@ -68,6 +76,7 @@ export class ApiClient {
   }: RequestConfig<T>): Promise<ResponseWrapper<T>> {
     return sendRequest<T, K>(path, buildRequest("GET", body));
   }
+
   static async post<T, K>({
     path,
     body,
