@@ -5,39 +5,81 @@ import {
   DialogTitle,
   DialogContent,
   Typography,
+  Box,
+  CardMedia,
+  Card,
+  CardContent,
+  IconButton,
+  DialogActions,
 } from "@mui/material";
-import { Favorite } from "@mui/icons-material";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
 
 interface SimpleDialogProps {
+  open: boolean;
+  handleClose: () => void;
+  imageUrl: string;
   breed: string;
-  color: string;
-  favorite: boolean;
+  name: string;
+  isFavorite: boolean;
+  age: number;
 }
 
 const DogModal: React.FC<SimpleDialogProps> = ({
+  open,
+  handleClose,
+  imageUrl,
   breed,
-  color,
-  favorite,
+  name,
+  isFavorite,
+  age,
 }: SimpleDialogProps) => {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
   return (
-    <>
-      <Button variant="contained" onClick={handleOpen}>
-        Open Dog Modal
-      </Button>
-      <Dialog open={open} onClose={handleClose} fullScreen>
-        <DialogTitle>
-          `Check out this ${color} ${breed}`
-        </DialogTitle>
-        <DialogContent>
-          <Typography variant="body1">This is the Dog Modal</Typography>
-          {favorite && <Favorite fontSize="small" />}
-        </DialogContent>
-      </Dialog>
-    </>
+    <Dialog open={open} onClose={handleClose}>
+      <DialogContent
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <Card sx={{ minWidth: 345, cursor: "pointer" }}>
+            <CardMedia
+              sx={{ padding: "1em 1em 0 1em", objectFit: "contain" }}
+              component="img"
+              height="200"
+              image={imageUrl}
+              alt={breed}
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                {breed}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Name: {name}
+              </Typography>
+              <Typography>Age: {age}</Typography>
+              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <IconButton>
+                  {isFavorite ? <Favorite /> : <FavoriteBorder />}
+                </IconButton>
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

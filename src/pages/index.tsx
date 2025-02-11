@@ -7,6 +7,7 @@ import {
   Box,
   Pagination,
   Button,
+  ButtonGroup,
 } from "@mui/material";
 import DogCard from "./components/DogComponents/DogCard";
 import { GetServerSideProps } from "next";
@@ -14,16 +15,18 @@ import { getSession } from "next-auth/react";
 import { DogService } from "@/api/services/DogService";
 import { Dog } from "@/api/models/Dog";
 import BreedsAutocomplete from "./components/BreedsAutocomplete/BreedsAutocomplete";
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 const HomePage: React.FC = () => {
   const [dogs, setDogs] = useState<Dog[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [authorized, setAuthorized] = useState(false);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
-  const [breedsFilter, setBreedsFilter] = useState<string[]>(["Chihuahua"]);
-  const [sortField, setSortField] = useState<"name" | "breed" | "age">("name");
+  const [breedsFilter, setBreedsFilter] = useState<string[]>([]);
+  const [sortField, setSortField] = useState<"name" | "breed" | "age">("breed");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const getDogs = async () => {
@@ -60,7 +63,7 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     getDogs();
-  }, [page]);
+  }, [page, breedsFilter, sortField, sortOrder]);
 
   // if (loading) {
   //   return (
@@ -104,13 +107,29 @@ const HomePage: React.FC = () => {
         </Typography>
         <Typography>Get started</Typography>
         {/* Render dog cards */}
-        <BreedsAutocomplete />
+        <BreedsAutocomplete setSelectedBreedFilters={setBreedsFilter} />
         {/*Sort Buttons*/}
-        <Box>
-          <Button onClick={() => handleSort("name")}>Sort by Name</Button>
-          <Button onClick={() => handleSort("breed")}>Sort by Breed</Button>
-          <Button onClick={() => handleSort("age")}>Sort by Age</Button>
-        </Box>
+        <ButtonGroup sx={{ marginBottom: 2 }}>
+          {["age", "breed", "name"].map((field) => (
+            <Button
+              key={field}
+              onClick={() => handleSort(field as "name" | "breed" | "age")}
+              variant={sortField === field ? "contained" : "outlined"}
+              color={sortField === field ? "primary" : "default"}
+            >
+              {field.charAt(0).toUpperCase() + field.slice(1)}{" "}
+              {sortField === field ? (
+                sortOrder === "asc" ? (
+                  <ArrowDropUpIcon fontSize="small" />
+                ) : (
+                  <ArrowDropDownIcon fontSize="small" />
+                )
+              ) : (
+                ""
+              )}
+            </Button>
+          ))}
+        </ButtonGroup>
         <Grid2 direction={"row"} size={4} container spacing={2}>
           {loading ? (
             <>
@@ -121,6 +140,7 @@ const HomePage: React.FC = () => {
             sortedDogs.map((dog) => (
               <DogCard
                 key={dog.id}
+                id={dog.id}
                 breed={dog.breed}
                 imageUrl={dog.img}
                 name={dog.name}

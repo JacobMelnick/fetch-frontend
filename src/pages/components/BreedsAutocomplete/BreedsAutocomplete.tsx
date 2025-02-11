@@ -1,10 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, SetStateAction, Dispatch } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import { DogService } from "@/api/services/DogService";
 
-const BreedsAutocomplete = () => {
+interface BreedsAutocompleteProps {
+  setSelectedBreedFilters: Dispatch<SetStateAction<string[]>>;
+}
+const BreedsAutocomplete = ({
+  setSelectedBreedFilters,
+}: BreedsAutocompleteProps) => {
   const [breedsList, setBreedsList] = useState<string[]>([]);
   const getBreeds = async () => {
     try {
@@ -24,12 +29,15 @@ const BreedsAutocomplete = () => {
         multiple
         id="breeds-list"
         options={breedsList}
+        onChange={(e, newValues) => {
+          setSelectedBreedFilters(newValues);
+        }}
         renderInput={(params) => (
           <TextField
             {...params}
             variant="standard"
             label="Breeds"
-            placeholder="Favorites"
+            placeholder="Select your favorite breeds"
           />
         )}
       />
