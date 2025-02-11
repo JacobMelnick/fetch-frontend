@@ -23,8 +23,26 @@ export class DogService {
     }
   }
 
-  public static async fetchDogIds(): Promise<SearchResultResponse | null> {
-    const url = `${DOG_URL}/search`;
+  public static async fetchDogIds({
+    page,
+    breeds,
+    sortField,
+    sortDir,
+  }: {
+    page: number;
+    breeds: string[];
+    sortField: "breed" | "age" | "name";
+    sortDir: "asc" | "desc";
+  }): Promise<SearchResultResponse | null> {
+    let url = `${DOG_URL}/search`;
+
+    const from = page ? 25 * (page - 1) : 0;
+    url += `?from=${from}&size=25`;
+
+    const params = new URLSearchParams();
+    breeds.forEach((breed) => params.append("breeds[]", breed));
+    url += `&${params.toString()}`;
+    url += `&sort=${sortField}:${sortDir}`;
     const request: RequestConfig<SearchResultResponse> = { path: url };
 
     try {
