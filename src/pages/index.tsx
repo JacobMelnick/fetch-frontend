@@ -15,7 +15,6 @@ import BreedsAutocomplete from "../components/BreedsAutocomplete/BreedsAutocompl
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import DogCardLoadingSkeleton from "@/components/DogComponents/DogCardLoadingSkeleton";
-import { GetServerSideProps } from "next";
 
 const HomePage: React.FC = () => {
   const [dogs, setDogs] = useState<Dog[]>([]);
@@ -171,24 +170,3 @@ const HomePage: React.FC = () => {
 };
 
 export default HomePage;
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  try {
-    await fetch("https://frontend-take-home-service.fetch.com/breeds", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    });
-  } catch {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-
-  return { props: {} };
-};

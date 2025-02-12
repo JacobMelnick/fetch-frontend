@@ -11,7 +11,6 @@ import {
   DialogActions,
 } from "@mui/material";
 import { Location } from "@/api/models/Location";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
 interface DogModalProps {
   open: boolean;
@@ -33,14 +32,6 @@ const DogModal: React.FC<DogModalProps> = ({
   age,
   location,
 }: DogModalProps) => {
-  const containerStyle = {
-    width: "100%",
-    height: "200px",
-  };
-  const mapLocation = {
-    lat: location.latitude,
-    lng: location.longitude,
-  };
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogContent
@@ -76,15 +67,6 @@ const DogModal: React.FC<DogModalProps> = ({
               <Typography>
                 Location: {location.city} {location.state}, {location.zip_code}
               </Typography>
-              <LoadScript googleMapsApiKey="YOUR_GOOGLE_MAPS_API_KEY">
-                <GoogleMap
-                  mapContainerStyle={containerStyle}
-                  center={mapLocation}
-                  zoom={10}
-                >
-                  <Marker position={mapLocation} />
-                </GoogleMap>
-              </LoadScript>
             </CardContent>
           </Card>
         </Box>

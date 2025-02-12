@@ -25,8 +25,8 @@ export class AuthService {
     };
 
     const response = await ApiClient.post(request);
-    if (response.isOk && !!response.data) {
-      return response.data;
+    if (response.isOk) {
+      return console.log(response);
     }
     throw new Error("Failed to logout");
   }

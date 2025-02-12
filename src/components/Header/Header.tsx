@@ -3,8 +3,11 @@ import { AppBar, Button, Box, Toolbar, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import DogMatcher from "../DogMatcher/DogMatcher";
+import { AuthService } from "@/api/services/AuthService";
+import { useRouter } from "next/router";
 
 const Header = () => {
+  const router = useRouter();
   return (
     <AppBar
       position="sticky"
@@ -46,6 +49,15 @@ const Header = () => {
           <Box mx={2}>
             <DogMatcher />
           </Box>
+          <Button
+            variant="text"
+            onClick={async () => {
+              await AuthService.logout();
+              router.push("/login");
+            }}
+          >
+            Logout
+          </Button>
         </Box>
       </Toolbar>
     </AppBar>

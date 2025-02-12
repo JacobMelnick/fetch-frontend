@@ -5,7 +5,6 @@ import DogCard from "../../components/DogComponents/DogCard";
 import { Box, Container, Grid2, Typography } from "@mui/material";
 import { useAtom } from "jotai";
 import { favoriteDogsAtom, favoritesAtom } from "@/utils/favoritesAtom";
-import { GetServerSideProps } from "next";
 
 const Favorites = () => {
   const [favoriteIds] = useAtom(favoritesAtom);
@@ -70,24 +69,3 @@ const Favorites = () => {
 };
 
 export default Favorites;
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  try {
-    await fetch("https://frontend-take-home-service.fetch.com/breeds", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    });
-  } catch {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-
-  return { props: {} };
-};
