@@ -2,15 +2,13 @@ import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import {
   Typography,
-  CircularProgress,
   Grid2,
   Box,
   Pagination,
   Button,
-  ButtonGroup,
+  Stack,
 } from "@mui/material";
 import DogCard from "../components/DogComponents/DogCard";
-import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import { DogService } from "@/api/services/DogService";
 import { Dog } from "@/api/models/Dog";
@@ -40,7 +38,6 @@ const HomePage: React.FC = () => {
         sortDir: sortOrder,
       });
       setAuthorized(true);
-      console.log("fetch dog resp", dogIdsResponse);
 
       if (dogIdsResponse?.resultIds) {
         const dogData = await DogService.getsDogsByIds(
@@ -94,62 +91,74 @@ const HomePage: React.FC = () => {
   return (
     authorized && (
       <Layout>
-        <Typography variant="h1" component="h1" gutterBottom>
-          Find your new best friend!
-        </Typography>
-        <BreedsAutocomplete setSelectedBreedFilters={setBreedsFilter} />
-        <ButtonGroup sx={{ marginBottom: 2 }}>
-          {["age", "breed", "name"].map((field) => (
-            <Button
-              key={field}
-              onClick={() => handleSort(field as "name" | "breed" | "age")}
-              variant={sortField === field ? "contained" : "outlined"}
-              color={sortField === field ? "primary" : "default"}
-            >
-              {field.charAt(0).toUpperCase() + field.slice(1)}{" "}
-              {sortField === field ? (
-                sortOrder === "asc" ? (
-                  <ArrowDropUpIcon fontSize="small" />
+        <Box sx={{ p: 2 }}>
+          <Stack alignItems="center">
+            <Typography variant="h5">Filter By Breed</Typography>
+            <BreedsAutocomplete setSelectedBreedFilters={setBreedsFilter} />
+          </Stack>
+          <Stack
+            alignItems="center"
+            my={2}
+            direction="row"
+            justifyContent="center"
+          >
+            {["age", "breed", "name"].map((field) => (
+              <Button
+                key={field}
+                sx={{ borderRadius: 2 }}
+                onClick={() => handleSort(field as "name" | "breed" | "age")}
+              >
+                {field.charAt(0).toUpperCase() + field.slice(1)}{" "}
+                {sortField === field ? (
+                  sortOrder === "asc" ? (
+                    <ArrowDropUpIcon fontSize="small" />
+                  ) : (
+                    <ArrowDropDownIcon fontSize="small" />
+                  )
                 ) : (
-                  <ArrowDropDownIcon fontSize="small" />
-                )
-              ) : (
-                ""
-              )}
-            </Button>
-          ))}
-        </ButtonGroup>
-        <Grid2 direction={"row"} size={4} container spacing={2}>
-          {loading ? (
-            <Grid2 direction={"row"} size={12} container spacing={2}>
-              <DogCardLoadingSkeleton />
-            </Grid2>
-          ) : (
-            sortedDogs.map((dog) => (
-              <DogCard
-                key={dog.id}
-                id={dog.id}
-                breed={dog.breed}
-                imageUrl={dog.img}
-                name={dog.name}
-                age={dog.age}
-              />
-            ))
-          )}
-        </Grid2>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            my: 2,
-          }}
-        >
-          <Pagination
-            count={Math.round(total / 25)}
-            page={page}
-            onChange={handlePageChange}
-            color="primary"
-          />
+                  ""
+                )}
+              </Button>
+            ))}
+          </Stack>
+          <Grid2
+            direction={"row"}
+            size={4}
+            container
+            spacing={2}
+            justifyContent="center"
+          >
+            {loading ? (
+              <Grid2 direction={"row"} size={12} container spacing={2}>
+                <DogCardLoadingSkeleton />
+              </Grid2>
+            ) : (
+              sortedDogs.map((dog) => (
+                <DogCard
+                  key={dog.id}
+                  id={dog.id}
+                  breed={dog.breed}
+                  imageUrl={dog.img}
+                  name={dog.name}
+                  age={dog.age}
+                />
+              ))
+            )}
+          </Grid2>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              my: 2,
+            }}
+          >
+            <Pagination
+              count={Math.round(total / 25)}
+              page={page}
+              onChange={handlePageChange}
+              color="primary"
+            />
+          </Box>
         </Box>
       </Layout>
     )

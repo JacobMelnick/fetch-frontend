@@ -1,7 +1,10 @@
 import { ApiClient } from "../apiClient/ApiClient";
 import { RequestConfig } from "../apiClient/types";
 import { Dog } from "../models/Dog";
-import { SearchResultResponse } from "../response/SearchResultResponse";
+import {
+  MatchResultResponse,
+  SearchResultResponse,
+} from "../response/SearchResultResponse";
 
 const DOG_URL = "/dogs";
 
@@ -16,7 +19,7 @@ export class DogService {
         return response.data;
       }
       console.error("Error fetching breeds:", response.error);
-      return null; // Return null instead of throwing an error
+      return null;
     } catch (error) {
       console.error("Unexpected error in fetchBreeds:", error);
       return null;
@@ -51,7 +54,7 @@ export class DogService {
         return response.data;
       }
       console.error("Error fetching dogs:", response.error);
-      return null; // Return null instead of throwing an error
+      return null;
     } catch (error) {
       console.error("Unexpected error in fetchDogs:", error);
       return null;
@@ -67,7 +70,29 @@ export class DogService {
         return response.data;
       }
       console.error("Error fetching dogs:", response.error);
-      return null; // Return null instead of throwing an error
+      return null;
+    } catch (error) {
+      console.error("Unexpected error in fetchDogs:", error);
+      return null;
+    }
+  }
+
+  public static async fetchDogMatches(
+    ids: string[]
+  ): Promise<MatchResultResponse[] | null> {
+    const url = `${DOG_URL}/match`;
+    const request: RequestConfig<MatchResultResponse[], string[]> = {
+      path: url,
+      body: ids,
+    };
+
+    try {
+      const response = await ApiClient.post(request);
+      if (response.isOk && response.data) {
+        return response.data;
+      }
+      console.error("Error fetching dogs:", response.error);
+      return null;
     } catch (error) {
       console.error("Unexpected error in fetchDogs:", error);
       return null;

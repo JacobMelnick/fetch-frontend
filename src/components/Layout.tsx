@@ -3,7 +3,12 @@ import Header from "./Header/Header";
 import Head from "next/head";
 
 const Layout = ({ children }) => (
-  <div style={{ overflow: "hidden" }}>
+  <div
+    style={{
+      overflow: "hidden",
+      backgroundColor: "lightcyan",
+    }}
+  >
     <Head>
       <title>White Oak Adoption Center</title>
     </Head>

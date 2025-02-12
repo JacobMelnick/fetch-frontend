@@ -33,13 +33,13 @@ const Header = () => {
         </Typography>
         <Box>
           <Button color="inherit">
-            <Link href="/" passHref>
-              <Typography>Home</Typography>
+            <Link href="/" passHref style={{ textDecoration: "none" }}>
+              <Typography sx={{ color: "black" }}>Home</Typography>
             </Link>
           </Button>
           <Button color="inherit">
-            <Link href="/favorites" passHref>
-              <Typography>Favorites</Typography>
+            <Link href="/favorites" passHref style={{ textDecoration: "none" }}>
+              <Typography sx={{ color: "black" }}>Favorites</Typography>
             </Link>
           </Button>
         </Box>

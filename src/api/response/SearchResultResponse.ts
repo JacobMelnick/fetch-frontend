@@ -3,3 +3,7 @@ export interface SearchResultResponse {
   next: string;
   total: number;
 }
+
+export interface MatchResultResponse {
+  match: "";
+}
