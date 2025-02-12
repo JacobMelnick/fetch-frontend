@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import Layout from "../components/Layout";
+import Layout from "../../components/Layout";
 import { DogService } from "@/api/services/DogService";
 import { Dog } from "@/api/models/Dog";
-import DogCard from "../components/DogComponents/DogCard";
+import DogCard from "../../components/DogComponents/DogCard";
 import { Grid2 } from "@mui/material";
 import { useAtom } from "jotai";
 import { favoritesAtom } from "@/utils/favoritesAtom";

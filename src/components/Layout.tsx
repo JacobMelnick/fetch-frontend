@@ -8,7 +8,7 @@ const Layout = ({ children }) => (
       <title>White Oak Adoption Center</title>
     </Head>
     <Header />
-    <div style={{ paddingTop: 150 }}>{children}</div>
+    <div style={{ paddingTop: 50 }}>{children}</div>
     <Footer />
   </div>
 );

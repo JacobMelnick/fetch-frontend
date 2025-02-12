@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Layout from "./components/Layout";
+import Layout from "../components/Layout";
 import {
   Typography,
   CircularProgress,
@@ -9,22 +9,23 @@ import {
   Button,
   ButtonGroup,
 } from "@mui/material";
-import DogCard from "./components/DogComponents/DogCard";
+import DogCard from "../components/DogComponents/DogCard";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import { DogService } from "@/api/services/DogService";
 import { Dog } from "@/api/models/Dog";
-import BreedsAutocomplete from "./components/BreedsAutocomplete/BreedsAutocomplete";
+import BreedsAutocomplete from "../components/BreedsAutocomplete/BreedsAutocomplete";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import DogCardLoadingSkeleton from "@/components/DogComponents/DogCardLoadingSkeleton";
 
 const HomePage: React.FC = () => {
   const [dogs, setDogs] = useState<Dog[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [authorized, setAuthorized] = useState(false);
-  const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(0);
+  const [authorized, setAuthorized] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [total, setTotal] = useState<number>(0);
   const [breedsFilter, setBreedsFilter] = useState<string[]>([]);
   const [sortField, setSortField] = useState<"name" | "breed" | "age">("breed");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -65,15 +66,6 @@ const HomePage: React.FC = () => {
     getDogs();
   }, [page, breedsFilter, sortField, sortOrder]);
 
-  // if (loading) {
-  //   return (
-  //     <Layout>
-  //       <CircularProgress />
-  //       <Typography>Loading dogs...</Typography>
-  //     </Layout>
-  //   );
-  // }
-
   if (error) {
     return (
       <Layout>
@@ -105,10 +97,7 @@ const HomePage: React.FC = () => {
         <Typography variant="h1" component="h1" gutterBottom>
           Find your new best friend!
         </Typography>
-        <Typography>Get started</Typography>
-        {/* Render dog cards */}
         <BreedsAutocomplete setSelectedBreedFilters={setBreedsFilter} />
-        {/*Sort Buttons*/}
         <ButtonGroup sx={{ marginBottom: 2 }}>
           {["age", "breed", "name"].map((field) => (
             <Button
@@ -132,10 +121,9 @@ const HomePage: React.FC = () => {
         </ButtonGroup>
         <Grid2 direction={"row"} size={4} container spacing={2}>
           {loading ? (
-            <>
-              <CircularProgress />
-              <Typography>Loading dogs...</Typography>
-            </>
+            <Grid2 direction={"row"} size={12} container spacing={2}>
+              <DogCardLoadingSkeleton />
+            </Grid2>
           ) : (
             sortedDogs.map((dog) => (
               <DogCard

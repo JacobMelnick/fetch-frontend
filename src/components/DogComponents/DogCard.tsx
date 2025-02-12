@@ -5,11 +5,6 @@ import {
   CardMedia,
   Typography,
   IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
   Box,
 } from "@mui/material";
 import { FavoriteBorder, Favorite } from "@mui/icons-material";
@@ -32,25 +27,21 @@ const DogCard: React.FC<DogCardProps> = ({
   age,
   id,
 }) => {
-  console.log(age);
   const [isFavorite, setIsFavorite] = useState(false);
   const [open, setOpen] = useState(false);
   const [favorites, setFavorites] = useAtom(favoritesAtom);
   const isFavorited = favorites.includes(id);
-  console.log(favorites);
 
   const handleToggleFavorite = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
     if (!isFavorited) {
-      const newStorageItem = [...favorites, id];
-      setFavorites(newStorageItem);
-      localStorage.setItem("favorites", JSON.stringify(newStorageItem));
+      const newFavorite = [...favorites, id];
+      setFavorites(newFavorite);
+      localStorage.setItem("favorites", JSON.stringify(newFavorite));
     } else {
-      const newStorageItem = favorites.filter(
-        (savedId: string) => savedId !== id
-      );
-      setFavorites(newStorageItem);
-      localStorage.setItem("favorites", JSON.stringify(newStorageItem));
+      const newFavorite = favorites.filter((savedId: string) => savedId !== id);
+      setFavorites(newFavorite);
+      localStorage.setItem("favorites", JSON.stringify(newFavorite));
     }
     setIsFavorite(!isFavorite);
   };
@@ -65,7 +56,7 @@ const DogCard: React.FC<DogCardProps> = ({
 
   return (
     <>
-      <Card sx={{ minWidth: 345, cursor: "pointer" }} onClick={handleOpen}>
+      <Card sx={{ width: 345, cursor: "pointer" }} onClick={handleOpen}>
         <CardMedia
           sx={{ padding: "1em 1em 0 1em", objectFit: "contain" }}
           component="img"
