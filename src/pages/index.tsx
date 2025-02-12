@@ -15,12 +15,12 @@ import BreedsAutocomplete from "../components/BreedsAutocomplete/BreedsAutocompl
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import DogCardLoadingSkeleton from "@/components/DogComponents/DogCardLoadingSkeleton";
+import { GetServerSideProps } from "next";
 
 const HomePage: React.FC = () => {
   const [dogs, setDogs] = useState<Dog[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [authorized, setAuthorized] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
   const [breedsFilter, setBreedsFilter] = useState<string[]>([]);
@@ -29,6 +29,8 @@ const HomePage: React.FC = () => {
 
   const getDogs = async () => {
     setLoading(true);
+    document.body.style.margin = "0";
+
     try {
       const dogIdsResponse = await DogService.fetchDogIds({
         page,
@@ -36,23 +38,28 @@ const HomePage: React.FC = () => {
         sortField,
         sortDir: sortOrder,
       });
-      setAuthorized(true);
 
       if (dogIdsResponse?.resultIds) {
         const dogData = await DogService.getsDogsByIds(
           dogIdsResponse.resultIds
         );
-
         setTotal(dogIdsResponse.total);
         if (dogData) {
           setDogs(dogData);
+          if (dogData.length) {
+            const dogZips = dogData.map((dog) => dog.zip_code);
+            const dogLocations = await DogService.fetchDogLocations(dogZips);
+            if (dogLocations)
+              setDogs((prev) =>
+                prev.map((dog, i) => ({ ...dog, location: dogLocations[i] }))
+              );
+          }
         } else {
           setError("Failed to fetch dogs.");
         }
       }
     } catch {
       setError("An error occurred while fetching dogs.");
-      setAuthorized(false);
     } finally {
       setLoading(false);
     }
@@ -88,97 +95,100 @@ const HomePage: React.FC = () => {
   );
 
   return (
-    authorized && (
-      <Layout>
-        <Box sx={{ p: 2 }}>
-          <Stack alignItems="center">
-            <Typography variant="h5">Filter By Breed</Typography>
-            <BreedsAutocomplete setSelectedBreedFilters={setBreedsFilter} />
-          </Stack>
-          <Stack
-            alignItems="center"
-            my={2}
-            direction="row"
-            justifyContent="center"
-          >
-            {["breed", "age", "name"].map((field) => (
-              <Button
-                key={field}
-                sx={{ borderRadius: 2 }}
-                onClick={() => handleSort(field as "name" | "breed" | "age")}
-              >
-                {field.charAt(0).toUpperCase() + field.slice(1)}{" "}
-                {sortField === field ? (
-                  sortOrder === "asc" ? (
-                    <ArrowDropUpIcon fontSize="small" />
-                  ) : (
-                    <ArrowDropDownIcon fontSize="small" />
-                  )
+    <Layout>
+      <Box sx={{ p: 2 }}>
+        <Stack alignItems="center">
+          <Typography variant="h5">Filter By Breed</Typography>
+          <BreedsAutocomplete setSelectedBreedFilters={setBreedsFilter} />
+        </Stack>
+        <Stack
+          alignItems="center"
+          my={2}
+          direction="row"
+          justifyContent="center"
+        >
+          {["breed", "age", "name"].map((field) => (
+            <Button
+              key={field}
+              sx={{ borderRadius: 2 }}
+              onClick={() => handleSort(field as "name" | "breed" | "age")}
+            >
+              {field.charAt(0).toUpperCase() + field.slice(1)}{" "}
+              {sortField === field ? (
+                sortOrder === "asc" ? (
+                  <ArrowDropUpIcon fontSize="small" />
                 ) : (
-                  ""
-                )}
-              </Button>
-            ))}
-          </Stack>
-          <Grid2
-            direction={"row"}
-            size={4}
-            container
-            spacing={2}
-            justifyContent="center"
-          >
-            {loading ? (
-              <Grid2 direction={"row"} size={12} container spacing={2}>
-                <DogCardLoadingSkeleton />
-              </Grid2>
-            ) : (
-              sortedDogs.map((dog) => (
-                <DogCard
-                  key={dog.id}
-                  id={dog.id}
-                  breed={dog.breed}
-                  imageUrl={dog.img}
-                  name={dog.name}
-                  age={dog.age}
-                />
-              ))
-            )}
-          </Grid2>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              my: 2,
-            }}
-          >
-            <Pagination
-              count={Math.round(total / 25)}
-              page={page}
-              onChange={handlePageChange}
-              color="primary"
-            />
-          </Box>
+                  <ArrowDropDownIcon fontSize="small" />
+                )
+              ) : (
+                ""
+              )}
+            </Button>
+          ))}
+        </Stack>
+        <Grid2
+          direction={"row"}
+          size={4}
+          container
+          spacing={2}
+          justifyContent="center"
+        >
+          {loading ? (
+            <Grid2 direction={"row"} size={12} container spacing={2}>
+              <DogCardLoadingSkeleton />
+            </Grid2>
+          ) : (
+            sortedDogs.map((dog) => (
+              <DogCard
+                key={dog.id}
+                id={dog.id}
+                breed={dog.breed}
+                imageUrl={dog.img}
+                name={dog.name}
+                age={dog.age}
+                location={dog.location}
+              />
+            ))
+          )}
+        </Grid2>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            my: 2,
+          }}
+        >
+          <Pagination
+            count={Math.round(total / 25)}
+            page={page}
+            onChange={handlePageChange}
+            color="primary"
+          />
         </Box>
-      </Layout>
-    )
+      </Box>
+    </Layout>
   );
 };
 
 export default HomePage;
 
-// // ✅ This function must be **outside** the component
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   const session = await getSession(context);
-//   console.log(session);
+export const getServerSideProps: GetServerSideProps = async () => {
+  try {
+    await fetch("https://frontend-take-home-service.fetch.com/breeds", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+  } catch {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
-//   if (!session) {
-//     return {
-//       redirect: {
-//         destination: "/login",
-//         permanent: false,
-//       },
-//     };
-//   }
-
-//   return { props: {} };
-// };
+  return { props: {} };
+};

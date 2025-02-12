@@ -98,4 +98,25 @@ export class DogService {
       return null;
     }
   }
+
+  public static async fetchDogLocations(
+    zipCodes: string[]
+  ): Promise<Location[] | null> {
+    const request: RequestConfig<Location[], string[]> = {
+      path: "/locations",
+      body: zipCodes,
+    };
+
+    try {
+      const response = await ApiClient.post(request);
+      if (response.isOk && response.data) {
+        return response.data;
+      }
+      console.error("Error fetching dogs:", response.error);
+      return null;
+    } catch (error) {
+      console.error("Unexpected error in fetchDogs:", error);
+      return null;
+    }
+  }
 }

@@ -11,6 +11,7 @@ import { FavoriteBorder, Favorite } from "@mui/icons-material";
 import { useAtom } from "jotai";
 import { favoritesAtom } from "@/utils/favoritesAtom";
 import DogModal from "./DogModal";
+import { Location } from "@/api/models/Location";
 
 interface DogCardProps {
   breed: string;
@@ -18,6 +19,7 @@ interface DogCardProps {
   name: string;
   age: number;
   id: string;
+  location: Location;
 }
 
 const DogCard: React.FC<DogCardProps> = ({
@@ -26,6 +28,7 @@ const DogCard: React.FC<DogCardProps> = ({
   name,
   age,
   id,
+  location,
 }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [open, setOpen] = useState(false);
@@ -53,6 +56,7 @@ const DogCard: React.FC<DogCardProps> = ({
       setIsFavorite(true);
     }
   }, []);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -81,15 +85,18 @@ const DogCard: React.FC<DogCardProps> = ({
           </Box>
         </CardContent>
       </Card>
-      <DogModal
-        open={open}
-        handleClose={handleClose}
-        imageUrl={imageUrl}
-        breed={breed}
-        name={name}
-        isFavorite={isFavorite}
-        age={age}
-      />
+      {open && (
+        <DogModal
+          open={open}
+          handleClose={handleClose}
+          imageUrl={imageUrl}
+          breed={breed}
+          name={name}
+          isFavorite={isFavorite}
+          age={age}
+          location={location}
+        />
+      )}
     </>
   );
 };

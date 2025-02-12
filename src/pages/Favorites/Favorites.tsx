@@ -1,19 +1,16 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Layout from "../../components/Layout";
 import { DogService } from "@/api/services/DogService";
-import { Dog } from "@/api/models/Dog";
 import DogCard from "../../components/DogComponents/DogCard";
 import { Box, Container, Grid2, Typography } from "@mui/material";
 import { useAtom } from "jotai";
-import { favoritesAtom } from "@/utils/favoritesAtom";
-import { MatchResultResponse } from "@/api/response/SearchResultResponse";
+import { favoriteDogsAtom, favoritesAtom } from "@/utils/favoritesAtom";
+import { GetServerSideProps } from "next";
 
 const Favorites = () => {
   const [favoriteIds] = useAtom(favoritesAtom);
-  const [favoriteDogs, setFavoriteDogs] = useState<Dog[]>([]);
-  const [matchedDogs, setMatchedDogs] = useState<Dog[]>([]);
-  const [matchedDogIds, setMatchedDogsIds] = useState<string[]>([]);
-  console.log("matchedDogIds:", matchedDogIds);
+  const [favoriteDogs, setFavoriteDogs] = useAtom(favoriteDogsAtom);
+
   const getFavorites = async () => {
     if (favoriteIds.length) {
       const dogResp = await DogService.getsDogsByIds(favoriteIds);
@@ -25,32 +22,15 @@ const Favorites = () => {
     }
   };
 
-  const getDogMatches = async () => {
-    try {
-      await DogService.fetchDogMatches(favoriteIds).then(
-        (data) => {
-          setMatchedDogsIds(data);
-        }
-        //   {
-        //   favoriteDogs.forEach((favorite) => {
-        //     console.log("data:", data);
-        //     console.log("favorite:", favorite.id);
-        //     if (favorite.id === data.match) {
-        //       console.log("data:", data);
-        //     }
-
-        // }
-      );
-    } catch {}
-  };
-
   useEffect(() => {
-    getFavorites();
+    if (favoriteIds.length !== favoriteDogs.length) {
+      getFavorites();
+    }
   }, [favoriteIds]);
 
   return (
     <Layout>
-      <Box sx={{ minHeight: "100vh" }}>
+      <Box sx={{ minHeight: "100vh", p: 2 }}>
         {favoriteDogs.length <= 0 ? (
           <Container maxWidth="sm" sx={{ height: "100%" }}>
             <Box textAlign="center" mt={4}>
@@ -78,27 +58,7 @@ const Favorites = () => {
                   age={dog.age}
                   id={dog.id}
                   name={dog.name}
-                />
-              ))}
-            </Grid2>
-          </>
-        )}
-        {matchedDogs.length > 0 && (
-          <>
-            <Box textAlign="left" sx={{ py: 3 }}>
-              <Typography variant="h5" gutterBottom>
-                Our Matches
-              </Typography>
-            </Box>
-            <Grid2 direction={"row"} size={4} container spacing={2}>
-              {matchedDogs.map((dog) => (
-                <DogCard
-                  key={dog.id}
-                  breed={dog.breed}
-                  imageUrl={dog.img}
-                  age={dog.age}
-                  id={dog.id}
-                  name={dog.name}
+                  location={dog.location}
                 />
               ))}
             </Grid2>
@@ -110,3 +70,24 @@ const Favorites = () => {
 };
 
 export default Favorites;
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  try {
+    await fetch("https://frontend-take-home-service.fetch.com/breeds", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+  } catch {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};

@@ -2,6 +2,7 @@ import React from "react";
 import { AppBar, Button, Box, Toolbar, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
+import DogMatcher from "../DogMatcher/DogMatcher";
 
 const Header = () => {
   return (
@@ -31,7 +32,7 @@ const Header = () => {
         >
           White Oak Adoption Center
         </Typography>
-        <Box>
+        <Box display="flex">
           <Button color="inherit">
             <Link href="/" passHref style={{ textDecoration: "none" }}>
               <Typography sx={{ color: "black" }}>Home</Typography>
@@ -42,6 +43,9 @@ const Header = () => {
               <Typography sx={{ color: "black" }}>Favorites</Typography>
             </Link>
           </Button>
+          <Box mx={2}>
+            <DogMatcher />
+          </Box>
         </Box>
       </Toolbar>
     </AppBar>
