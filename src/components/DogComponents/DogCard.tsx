@@ -32,7 +32,9 @@ const DogCard: React.FC<DogCardProps> = ({
   const [favorites, setFavorites] = useAtom(favoritesAtom);
   const isFavorited = favorites.includes(id);
 
-  const handleToggleFavorite = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleToggleFavorite = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.stopPropagation();
     if (!isFavorited) {
       const newFavorite = [...favorites, id];

@@ -9,7 +9,6 @@ import {
   Stack,
 } from "@mui/material";
 import DogCard from "../components/DogComponents/DogCard";
-import { getSession } from "next-auth/react";
 import { DogService } from "@/api/services/DogService";
 import { Dog } from "@/api/models/Dog";
 import BreedsAutocomplete from "../components/BreedsAutocomplete/BreedsAutocomplete";
@@ -102,7 +101,7 @@ const HomePage: React.FC = () => {
             direction="row"
             justifyContent="center"
           >
-            {["age", "breed", "name"].map((field) => (
+            {["breed", "age", "name"].map((field) => (
               <Button
                 key={field}
                 sx={{ borderRadius: 2 }}

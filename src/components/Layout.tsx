@@ -1,8 +1,10 @@
 import Footer from "./Footer/Footer";
 import Header from "./Header/Header";
 import Head from "next/head";
-
-const Layout = ({ children }) => (
+type LayoutProps = {
+  children: React.ReactNode;
+};
+const Layout: React.FC<LayoutProps> = ({ children }) => (
   <div
     style={{
       overflow: "hidden",

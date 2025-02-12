@@ -12,7 +12,6 @@ export class AuthService {
     };
 
     const response = await ApiClient.post(request);
-    console.log("loging");
     if (response.isOk) {
       return console.log(response);
     }
