@@ -54,8 +54,11 @@ const HomePage: React.FC = () => {
             const dogZips = dogData.map((dog) => dog.zip_code);
             const dogLocations = await DogService.fetchDogLocations(dogZips);
             if (dogLocations)
-              setDogs((prev) =>
-                prev.map((dog, i) => ({ ...dog, location: dogLocations[i] }))
+              setDogs((prev: any) =>
+                prev.map((dog: Dog, i: number) => ({
+                  ...dog,
+                  location: dogLocations[i],
+                }))
               );
           }
         } else {

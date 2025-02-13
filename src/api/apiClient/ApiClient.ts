@@ -25,6 +25,7 @@ const buildRequest = (
   return request;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function sendRequest<T, _K>(
   path: string,
   config: RequestInit

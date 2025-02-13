@@ -117,6 +117,7 @@ const DogMatcher = () => {
                       imageUrl={currentDog.img}
                       name={currentDog.name}
                       age={currentDog.age}
+                      location={currentDog.location}
                     />
                   ) : (
                     <Typography variant="h4" fontWeight="bold">

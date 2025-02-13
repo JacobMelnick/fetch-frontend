@@ -56,7 +56,7 @@ const LocationSearch: React.FC = () => {
       <Autocomplete
         multiple
         options={states}
-        value={selectedStates}
+        value={states.filter((state) => selectedStates.includes(state.code))}
         getOptionLabel={(option) => option.label}
         renderTags={(value, getProps) =>
           value.map((option, index) => (
@@ -67,7 +67,9 @@ const LocationSearch: React.FC = () => {
             />
           ))
         }
-        onChange={(event, newState) => setSelectedStates(newState)}
+        onChange={(event, newState) => {
+          setSelectedStates(newState.map((state) => state.code));
+        }}
         renderInput={(params) => (
           <TextField {...params} label="Select States" variant="outlined" />
         )}

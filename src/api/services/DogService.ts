@@ -130,7 +130,7 @@ export class DogService {
     city?: string,
     states?: string[],
     from: number = 0,
-    size: number = 10000
+    size: number = 25
   ): Promise<LocationResultResponse | null> {
     const url = `/locations/search`;
 
@@ -141,7 +141,7 @@ export class DogService {
       states?: string[];
     };
 
-    const body: Tbody = {
+    const body: Tbody | any = {
       from: from,
       size: size,
     };
@@ -155,13 +155,11 @@ export class DogService {
 
     const request: RequestConfig<LocationResultResponse> = {
       path: url,
-      body,
+      body: body,
     };
-    console.log("request:", request);
 
     try {
       const response = await ApiClient.post(request);
-      console.log("response:", response);
       if (response.isOk && response.data) {
         return response.data;
       }

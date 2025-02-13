@@ -20,7 +20,7 @@ const Favorites = () => {
             return dogResp.map((dog, index) => ({
               ...dog,
               location: dogLocations[index],
-            }));
+            })) as any;
           });
       }
     } else {

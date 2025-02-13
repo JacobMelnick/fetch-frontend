@@ -13,6 +13,7 @@ const AppWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   useEffect(() => {
     const checkSession = async () => {
+      // ghost call to check session
       const response = await DogService.fetchBreeds();
       if (!response) {
         setError("error");

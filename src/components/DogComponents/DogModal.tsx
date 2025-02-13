@@ -64,9 +64,11 @@ const DogModal: React.FC<DogModalProps> = ({
                 Name: {name}
               </Typography>
               <Typography>Age: {age}</Typography>
-              <Typography>
-                Location: {location.city} {location.state}, {location.zip_code}
-              </Typography>
+              {location && (
+                <Typography>
+                  Location: {location.city} {location.state},{location.zip_code}
+                </Typography>
+              )}
             </CardContent>
           </Card>
         </Box>
