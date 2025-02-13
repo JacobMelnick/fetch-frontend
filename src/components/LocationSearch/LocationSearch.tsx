@@ -84,7 +84,7 @@ const LocationSearch: React.FC = () => {
         >
           Search
         </Button>
-        <IconButton onClick={handleReset}>
+        <IconButton onClick={handleReset} aria-label="RestartAltIcon">
           <RestartAltIcon />
         </IconButton>
       </Stack>
