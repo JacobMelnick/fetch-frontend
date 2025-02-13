@@ -17,7 +17,7 @@ const AppWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       const response = await DogService.fetchBreeds();
       if (!response) {
         setError("error");
-        router.push("/Login/login");
+        router.push("/login");
         setAuthorized(false);
       } else {
         setError("");
