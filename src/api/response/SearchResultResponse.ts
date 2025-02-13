@@ -1,3 +1,5 @@
+import { Location } from "../models/Location";
+
 export interface SearchResultResponse {
   resultIds: [];
   next: string;
@@ -6,4 +8,9 @@ export interface SearchResultResponse {
 
 export interface MatchResultResponse {
   match: "";
+}
+
+export interface LocationResultResponse {
+  results: Location[];
+  total: number;
 }

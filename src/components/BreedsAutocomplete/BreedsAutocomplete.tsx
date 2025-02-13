@@ -3,6 +3,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import { DogService } from "@/api/services/DogService";
+import { Typography } from "@mui/material";
 
 interface BreedsAutocompleteProps {
   setSelectedBreedFilters: Dispatch<SetStateAction<string[]>>;
@@ -25,6 +26,8 @@ const BreedsAutocomplete = ({
   }, []);
   return (
     <Stack spacing={3} sx={{ width: 500 }}>
+      <Typography variant="h5">Filter By Breed</Typography>
+
       <Autocomplete
         multiple
         id="breeds-list"

@@ -15,6 +15,9 @@ import BreedsAutocomplete from "../components/BreedsAutocomplete/BreedsAutocompl
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import DogCardLoadingSkeleton from "@/components/DogComponents/DogCardLoadingSkeleton";
+import LocationSearch from "@/components/LocationSearch/LocationSearch";
+import { useAtom } from "jotai";
+import { dogZipCodesAtom } from "@/utils/dogZipCodesAtom";
 
 const HomePage: React.FC = () => {
   const [dogs, setDogs] = useState<Dog[]>([]);
@@ -25,6 +28,7 @@ const HomePage: React.FC = () => {
   const [breedsFilter, setBreedsFilter] = useState<string[]>([]);
   const [sortField, setSortField] = useState<"name" | "breed" | "age">("breed");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [dogZips] = useAtom(dogZipCodesAtom);
 
   const getDogs = async () => {
     setLoading(true);
@@ -36,6 +40,7 @@ const HomePage: React.FC = () => {
         breeds: breedsFilter,
         sortField,
         sortDir: sortOrder,
+        zipCodes: dogZips,
       });
 
       if (dogIdsResponse?.resultIds) {
@@ -66,7 +71,7 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     getDogs();
-  }, [page, breedsFilter, sortField, sortOrder]);
+  }, [page, breedsFilter, sortField, sortOrder, dogZips]);
 
   if (error) {
     return (
@@ -96,8 +101,10 @@ const HomePage: React.FC = () => {
   return (
     <Layout>
       <Box sx={{ p: 2 }}>
+        <Stack my={2} direction="row" justifyContent="flex-start">
+          <LocationSearch />
+        </Stack>
         <Stack alignItems="center">
-          <Typography variant="h5">Filter By Breed</Typography>
           <BreedsAutocomplete setSelectedBreedFilters={setBreedsFilter} />
         </Stack>
         <Stack

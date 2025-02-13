@@ -9,12 +9,19 @@ import { favoriteDogsAtom, favoritesAtom } from "@/utils/favoritesAtom";
 const Favorites = () => {
   const [favoriteIds] = useAtom(favoritesAtom);
   const [favoriteDogs, setFavoriteDogs] = useAtom(favoriteDogsAtom);
-
   const getFavorites = async () => {
     if (favoriteIds.length) {
       const dogResp = await DogService.getsDogsByIds(favoriteIds);
       if (dogResp) {
-        setFavoriteDogs(dogResp);
+        const dogZips = dogResp.map((dog) => dog.zip_code);
+        const dogLocations = await DogService.fetchDogLocations(dogZips);
+        if (dogLocations)
+          setFavoriteDogs(() => {
+            return dogResp.map((dog, index) => ({
+              ...dog,
+              location: dogLocations[index],
+            }));
+          });
       }
     } else {
       setFavoriteDogs([]);
